@@ -1,0 +1,33 @@
+<div>
+  <h1>Let's Setup a Game!</h1>
+  <%= form_tag("new_game", method: :post) do %>
+    <%= label_tag :player1, "Player1 Type:" %>
+    <ul>
+      <% @player_options.each do |option| %>
+        <li> <%= check_box_tag :player1, "#{option}" %>
+        <%= label_tag "#{option.to_s.gsub(/TTT::/, '').upcase.gsub(/AI/, 'AI ')}" %></li>
+      <% end %>
+    </ul>
+
+    <%= label_tag :player2, "Player2 Type:" %>
+    <ul>
+      <% @player_options.each do |option| %>
+        <li> <%= check_box_tag :player2, "#{option}" %>
+        <%= label_tag "#{option.to_s.gsub(/TTT::/, '').upcase.gsub(/AI/, 'AI ')}" %></li>
+      <% end %>
+    </ul>
+
+      <%= label_tag :board, "Board Type:" %>
+      <ul>
+        <% @board_options.each do |board| %>
+          <li><%= check_box_tag :board, "#{board}" %>
+          <%= label_tag "#{board.to_s.gsub(/TTT::/, '').capitalize}" %></li>
+        <% end %>
+      </ul>
+    <ul>
+
+    <%= submit_tag "Submit" %>
+  <% end %>
+
+
+</div>
