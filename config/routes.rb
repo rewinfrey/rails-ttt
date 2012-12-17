@@ -10,7 +10,7 @@ Railsttt::Application.routes.draw do
       get 'test_show'
       get 'determine_next_move'
       get 'end_game'
-      post 'mark_move'
+      put 'mark_move'
     end
     collection do
       put 'setup'

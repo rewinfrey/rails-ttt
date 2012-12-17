@@ -63,12 +63,13 @@ class WebGamesController < ApplicationController
     if @web_game.finished? && @web_game.winner?
       flash[:notice] = "#{@web_game.winner} is the winner!"
     elsif @web_game.finished?
-      flash[:notice] = "It's a draw."
+      flash[:notice] = "It's a draw"
     else
       redirect_to @web_game
       return
     end
     cookies[:game_id] = nil
+    @web_game_presenter = WebGamePresenter.for(@web_game.game.board)
     render "end_game"
   end
 

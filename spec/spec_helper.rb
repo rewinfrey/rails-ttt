@@ -1,8 +1,25 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= 'test'
+require 'simplecov'
+SimpleCov.start
+#$LOAD_PATH.unshift(File.dirname( __FILE__, 'lib/rubyttt/lib/ttt' ))
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
+require 'ruby-ttt/lib/ttt/game'
+require 'ruby-ttt/lib/ttt/three_by_three'
+require 'ruby-ttt/lib/ttt/four_by_four'
+require 'ruby-ttt/lib/ttt/three_by_three_by_three'
+require 'ruby-ttt/lib/ttt/human'
+require 'ruby-ttt/lib/ttt/ai_easy'
+require 'ruby-ttt/lib/ttt/ai_medium'
+require 'ruby-ttt/lib/ttt/ai_hard'
+require 'ruby-ttt/lib/ttt/web_view'
+require 'ruby-ttt/lib/ttt/game_setup'
+require 'ruby-ttt/lib/ttt/game_setup_io_interface'
+require 'ruby-ttt/lib/ttt/gameio'
+require 'ruby-ttt/lib/ttt/board'
+
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

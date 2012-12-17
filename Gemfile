@@ -23,6 +23,16 @@ end
 group :development do
   gem 'pry'
   gem 'rspec-rails'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+end
+
+group :test do
+  gem 'rspec-rails'
+  gem 'simplecov'
+  gem 'ZenTest'
+  gem 'autotest-growl'
+  gem 'autotest-fsevent'
 end
 
 gem 'jquery-rails'
