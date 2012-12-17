@@ -1,30 +1,8 @@
-<div style="width: 300px; margin: 100px auto 100px auto;">
+<%= link_to "New Game", new_web_game_path %>
+
+<div style="width: 1020px; margin: 100px auto 100px auto;">
   <% if flash[:notice] %>
     <h4 class="notice"><%= flash[:notice] %></h4>
   <% end %>
-  <table>
-    <tr>
-      <% @web_game.game.board[].each_with_index do |square, index| %>
-        <% if index % 3 == 0 %>
-         </tr><tr>
-        <% end %>
-          <% if square == " " %>
-            <td id="<%=index %>" style="font-size: 30px; line-height: 12px;" class="square"><%= index %></td>
-          <% else %>
-            <td id="<%=index %>" class="square"><%= square %></td>
-          <% end %>
-        </td>
-      <% end %>
-    </tr>
-  </table>
-</div>
-<%= form_tag("update", method: "post") do %>
-  <%= label_tag :input_move, "Input Move" %>
-  <%= submit_tag %>
-<% end %>
-<h3>Web Game from db</h3>
-              <%= @web_game.inspect %>
-
-  <h3>Game</h3>
-  <%= @web_game.game.inspect %>
+  <%= @web_game_presenter.show_board.html_safe %>
 </div>
