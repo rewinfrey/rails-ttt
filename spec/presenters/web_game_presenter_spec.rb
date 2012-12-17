@@ -10,10 +10,14 @@ describe WebGamePresenter do
     string
   end
 
-  def presenter_for(klass, updates)
+  def presenter_for(klass, updates={})
     board = klass.new
     updates.each { |index, marker| board.update index, marker }
-    presenter = described_class.new board: board
+    described_class.for board
+  end
+
+  it 'blows up if given a board it does not know' do
+    expect { described_class.for 'not a board' }.to raise_error ArgumentError, /Unknown board: "not a board"/
   end
 
   it 'renders a three_by_three board' do

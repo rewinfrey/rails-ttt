@@ -20,91 +20,77 @@ class WebGamesController < ApplicationController
   end
 
   def create
-    @player1  = params[:player1].constantize.new
-    @player2  = params[:player2].constantize.new
-    @board    = params[:board].constantize.new
-    @game     = TTT::Game.new(board: @board, player1: @player1, player2: @player2)
-    @game.player1.side = "x"
-    @game.player2.side = "o"
-    @web_game = WebGame.new(game: @game)
-    if @web_game.save
-      cookies[:game_id] = @web_game.id
-      flash[:notice] = "Welcome to TTT!"
-      redirect_to @web_game
+    web_game = WebGame.new(game: build_new_game(params))
+    if web_game.save
+      cookies[:game_id] = web_game.id
+      flash[:notice]    = "Welcome to TTT!"
+      redirect_to web_game
     else
-      flash[:error] = "Oops, something went wrong, please try again."
+      flash[:error]     = "Oops, something went wrong, please try again."
       redirect_to action: "new"
     end
   end
 
-  def display_board
-  end
-
   def index
     if cookies[:game_id]
+      @webgame = WebGame.find_by_id(cookies[:game_id])
+
+      require "pry"
+      binding.pry
       redirect_to WebGame.find_by_id(cookies[:game_id])
     else
+      cookies[:game_id] = nil
       redirect_to action: "new"
     end
   end
 
   def mark_move
     @web_game = WebGame.find_by_id(params[:id])
-    @web_game.game.mark_move(params[:move].to_i, @web_game.game.current_player.side)
-    @web_game.game.switch_player
-    @web_game.save
-    redirect_to @web_game
+    @web_game.process_move(params[:move].to_i) if params[:move] && @web_game.valid_move?(params[:move].to_i)
+    eval_board
   end
 
   def show
     @web_game = WebGame.find_by_id(params[:id])
-    if curr_player_ai?
-      next_move
-      return
-    else
-      if @web_game.game.current_player.side == @web_game.game.player1.side
-        flash[:notice] = "Player 1 turn."
-      else
-        flash[:notice] = "Player 2 turn."
-      end
-    end
+    return next_move if @web_game.current_player_ai?
+    flash[:notice] = player1_move? ? "Player 1 turn" : "Player 2 turn"
+    @web_game_presenter = WebGamePresenter.for(@web_game.game.board)
   end
 
-  def curr_player_ai?
-   @web_game.game.current_player.class.to_s =~ (/ai/i)
+  private
+
+  def eval_board
+    if @web_game.finished? && @web_game.winner?
+      flash[:notice] = "#{@web_game.winner} is the winner!"
+    elsif @web_game.finished?
+      flash[:notice] = "It's a draw."
+    else
+      redirect_to @web_game
+      return
+    end
+    cookies[:game_id] = nil
+    render "end_game"
   end
 
   def next_move
     @web_game.game = @web_game.game.next_move
     @web_game.save
-    if @web_game.game.board.finished?
-      redirect_to action: "end_game", id: @web_game.id
-      return
-    else
-      if curr_player_ai?
-        next_move
-        return
-      else
-        redirect_to @web_game
-      end
-    end
+    eval_board
   end
 
-  def eval_board
-    @web_game = WebGame.find_by_id(params[:id])
-    if @web_game.game.board.finished?
-      redirect_to action: end_game, id: @web_game.id
-      return
-    else
-      redirect_to @web_game
-    end
+  def player1_move?
+    @web_game.game.current_player.side == @web_game.game.player1.side
   end
 
-  def end_game
-    @web_game = WebGame.find_by_id(params[:id])
-  end
-
-  def test_show
-    @web_game = WebGame.find_by_id(params[:id])
+  def build_new_game(params)
+    player1  = params[:player1].constantize.new
+    player2  = params[:player2].constantize.new
+    board    = params[:board].constantize.new
+    game     = TTT::Game.new(board: board,
+                             player1: player1,
+                             player2: player2)
+    game.player1.side = "x"
+    game.player2.side = "o"
+    game
   end
 end
